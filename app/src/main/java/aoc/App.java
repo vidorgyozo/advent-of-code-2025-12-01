@@ -14,26 +14,23 @@ public class App {
     }
 
     public static void main(final String[] args) {
-        InputStream fileInputStream = App.class.getResourceAsStream("/input.txt");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
-        int[] dialPosition = {50};
-        AtomicInteger counter = new AtomicInteger(0);
+        final InputStream fileInputStream = App.class.getResourceAsStream("/input.txt");
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+        final int[] dialPosition = {50};
+        final AtomicInteger counter = new AtomicInteger(0);
         reader.lines().forEach(line -> {
-            String direction = line.substring(0, 1);
-            int distance = Integer.parseInt(line.substring(1));
+            final String direction = line.substring(0, 1);
+            final int distance = Integer.parseInt(line.substring(1));
+            final boolean beforePos = dialPosition[0] > 0;
             if(direction.equals("R")) {
                 dialPosition[0] += distance;
-                dialPosition[0] = dialPosition[0] % 100;
-                if(dialPosition[0] == 0) {
-                    counter.incrementAndGet();
-                }
             } else {
                 dialPosition[0] -= distance;
-                dialPosition[0] = dialPosition[0] % 100;
-                if(dialPosition[0] == 0) {
-                    counter.incrementAndGet();
-                }
             }
+            if(dialPosition[0] <= 0 && beforePos) counter.incrementAndGet();
+            counter.addAndGet(Math.abs(dialPosition[0]) / 100);
+            dialPosition[0] = dialPosition[0] % 100;
+            if (dialPosition[0] < 0) dialPosition[0] += 100;
         });
         System.out.println(counter.get());
     }
